@@ -9,6 +9,8 @@ public class UserController {
 	@GetMapping("/health")
 	public String health() {
 		
+		System.out.println("health check methods called.........");
+		
 		return "Scim Application is Up and running........";
 		
 		
