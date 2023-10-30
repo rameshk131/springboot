@@ -1,5 +1,7 @@
 package com.okta.scim.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +32,16 @@ public class StudentController {
 		System.out.println("getStudent() methods called......sid == "+sid);
 		
 		return stu.getStudent(sid);
+		
+		
+	}
+	
+	@GetMapping("/students")
+	public List<Student> getStudents() {
+		
+		System.out.println("getStudents() methods called......");
+		
+		return stu.getStudents();
 		
 		
 	}
