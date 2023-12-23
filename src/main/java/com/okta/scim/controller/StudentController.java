@@ -21,7 +21,7 @@ public class StudentController {
 		
 		System.out.println("health check methods called.........");
 		
-		return "Scim Application is Up and running........";
+		return "Scim Application is Up and running....to test docker image....";
 		
 		
 	}
