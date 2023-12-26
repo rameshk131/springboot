@@ -1,7 +1,8 @@
 pipeline {
     agent any
     environment {
-        imagename = "ramesh131/spring-demo"
+        //imagename = "ramesh131/spring-demo"
+        imagename = "817950466876.dkr.ecr.us-east-1.amazonaws.com/my-ecr-repo"
         registryCredential = "rameshDockerRegistry"
         dockerImage = ''
         //devSystemAddress="devops@192.168.1.45"
@@ -21,13 +22,25 @@ pipeline {
                 // sh """docker build . -t vincentstrife/capstone-create-update:v${env.BUILD_NUMBER}"""
             }
         }
+        stage('configure aws'){
+            steps {
+                sh 'aws configure set aws_access_key_id "${AWS_ACCESS_KEY}"'
+                sh 'aws configure set aws_secret_access_key "${AWS_SECRET_ACCESS_KEY}"'
+            }
+        }
+        stage('aws ecr login'){
+            steps {
+                sh 'eval $(aws ecr get-login --no-include-email --region us-east-1 | sed 's;https://;;g')'
+            }
+        }
         stage('Push Built Image to Docker Hub'){
             steps{
                 script{
-                    docker.withRegistry('', registryCredential) {
-                        dockerImage.push()
-                        dockerImage.push('latest')
-                    }
+                    //docker.withRegistry('', registryCredential) {
+                    dockerImage.push()
+                    dockerImage.push('latest')
+                    
+                    //}
                 }
             }
         }
