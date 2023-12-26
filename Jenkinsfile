@@ -19,7 +19,6 @@ pipeline {
                 script{
                     dockerImage = docker.build("${env.imagename}:v${env.BUILD_NUMBER}")
                 }
-                // sh """docker build . -t vincentstrife/capstone-create-update:v${env.BUILD_NUMBER}"""
             }
         }
         stage('configure aws'){
@@ -30,7 +29,7 @@ pipeline {
         }
         stage('aws ecr login'){
             steps {
-                sh 'eval $(aws ecr get-login --no-include-email --region us-east-1 | sed 's;https://;;g')'
+                sh 'eval $(aws ecr get-login --no-include-email --region us-east-1 | sed "s;https://;;g")'
             }
         }
         stage('Push Built Image to Docker Hub'){
