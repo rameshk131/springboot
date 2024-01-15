@@ -1,0 +1,50 @@
+ipeline {
+    agent any
+    
+    environment{
+        imagename = "ramesh131/java-repo"
+        dockerImage = ''
+        PATH = "/opt/maven/bin:$PATH"
+        ID_DOCKER_HUB="ID_DOCKER_HUB"
+    }
+    stages {
+         stage('Git Clone') { 
+            steps {
+                git credentialsId: 'ID_GIT_HUB', url: 'https://github.com/rameshk131/java-springboot.git'
+            }
+        }
+        stage('Build') { 
+            steps {
+                sh "mvn clean install"
+            }
+        }
+        // stage('Docker Build') { 
+        //     steps {
+                
+        //         sh "docker version"
+        //         sh "docker build -t java-repo ."
+        //         sh "docker image list"
+        //         sh "docker tag java-repo ramesh131/java-repo:java-repo"
+        //     }
+        // }
+        stage('Docker Build') { 
+            steps {
+                script{
+                    dockerImage = docker.build("${env.imagename}:v${env.BUILD_NUMBER}")
+                }
+            }
+        }
+         stage('Push Image to Docker Hub') { 
+            steps {
+                script{
+                    docker.withRegistry('', ID_DOCKER_HUB) {
+                            dockerImage.push()
+                            dockerImage.push('latest')
+                    }
+                }
+            }
+        }
+
+    }
+    
+}
