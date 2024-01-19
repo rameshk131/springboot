@@ -5,12 +5,12 @@ pipeline {
         imagename = "ramesh131/java-repo"
         dockerImage = ''
         PATH = "/opt/maven/bin:$PATH"
-        ID_DOCKER_HUB="ID_DOCKER_HUB"
+        DOCKER_HUB_CREDENTIAL="DOCKER_HUB_CREDENTIAL"
     }
     stages {
          stage('Git Clone') { 
             steps {
-                git credentialsId: 'ID_GIT_HUB', url: 'https://github.com/rameshk131/java-springboot.git'
+                git credentialsId: 'GIT_HUB_CREDENTIAL', url: 'https://github.com/rameshk131/java-springboot.git', branch: 'master'
             }
         }
         stage('Build') { 
@@ -37,11 +37,17 @@ pipeline {
          stage('Push Image to Docker Hub') { 
             steps {
                 script{
-                    docker.withRegistry('', ID_DOCKER_HUB) {
+                    docker.withRegistry('', DOCKER_HUB_CREDENTIAL) {
                             dockerImage.push()
                             dockerImage.push('latest')
                     }
                 }
+            }
+        }
+        
+        stage('Eks Deployment') { 
+            steps {
+                sh "kubectl apply -f deployment.yaml"
             }
         }
 
